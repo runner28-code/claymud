@@ -1,4 +1,4 @@
-package emote
+package social
 
 import (
 	"testing"

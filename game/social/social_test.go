@@ -1,4 +1,4 @@
-package emote
+package social
 
 import (
 	"bytes"
@@ -12,7 +12,7 @@ import (
 )
 
 func TestParse(t *testing.T) {
-	ems, err := decodeEmotes(strings.NewReader(data))
+	ems, err := decodeSocials(strings.NewReader(data))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -34,11 +34,11 @@ func TestParse(t *testing.T) {
 func TestPerformOther(t *testing.T) {
 	defer patchGender(t)()
 
-	ems, err := decodeEmotes(strings.NewReader(data))
+	ems, err := decodeSocials(strings.NewReader(data))
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = loadEmotes(ems)
+	err = loadSocials(ems)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -57,7 +57,7 @@ func TestPerformOther(t *testing.T) {
 	others := &bytes.Buffer{}
 	found := Perform("smile", a, b, others)
 	if !found {
-		t.Fatal("smile emote not found")
+		t.Fatal("smile social not found")
 	}
 	expected := "You smile at fooName2."
 	if a.buf.String() != expected {
@@ -72,7 +72,7 @@ func TestPerformOther(t *testing.T) {
 
 /*
 func (*Tests) TestParse(c *C) {
-	ems, err := decodeEmotes(strings.NewReader(data))
+	ems, err := decodeSocials(strings.NewReader(data))
 	c.Assert(err, IsNil)
 	c.Assert(ems, HasLen, 2)
 
@@ -90,34 +90,34 @@ func (*Tests) TestParse(c *C) {
 	c.Assert(e.ToNoOne, NotNil)
 }
 
-func (*Tests) TestLoadEmotes(c *C) {
-	ems, err := decodeEmotes(strings.NewReader(data))
+func (*Tests) TestLoadSocials(c *C) {
+	ems, err := decodeSocials(strings.NewReader(data))
 	c.Assert(err, IsNil)
 	c.Assert(ems, HasLen, 2)
 
-	err = loadEmotes(ems)
+	err = loadSocials(ems)
 	c.Assert(err, IsNil)
 	c.Assert(Names, HasLen, 2)
-	c.Assert(emotes, HasLen, 2)
+	c.Assert(socials, HasLen, 2)
 }
 
-func (*Tests) TestDupeEmotes(c *C) {
-	ems, err := decodeEmotes(strings.NewReader(dupes))
+func (*Tests) TestDupeSocials(c *C) {
+	ems, err := decodeSocials(strings.NewReader(dupes))
 	c.Assert(err, IsNil)
 	c.Assert(ems, HasLen, 2)
 
-	err = loadEmotes(ems)
-	c.Assert(err, ErrorMatches, `Duplicate emote defined: "smile"`)
+	err = loadSocials(ems)
+	c.Assert(err, ErrorMatches, `Duplicate social defined: "smile"`)
 }
 
 func (*Tests) TestPerformSelf(c *C) {
 	defer patchGender(c)()
 
-	ems, err := decodeEmotes(strings.NewReader(data))
+	ems, err := decodeSocials(strings.NewReader(data))
 	c.Assert(err, IsNil)
 	c.Assert(ems, HasLen, 2)
 
-	err = loadEmotes(ems)
+	err = loadSocials(ems)
 	c.Assert(err, IsNil)
 
 	a := testActor{
@@ -165,32 +165,32 @@ func (a testActor) Write(b []byte) (int, error) {
 }
 
 var data = `
-[[emote]]
+[[social]]
 name = "smile"
 
-[emote.toSelf]
+[social.toSelf]
 self = "You smile to yourself."
 around = "{{.Actor}} smiles to {{.Xself}}."
 
-[emote.toNoOne]
+[social.toNoOne]
 self = "You smile."
 around = "{{.Actor}} smiles."
 
-[emote.toOther]
+[social.toOther]
 self = "You smile at {{.Target}}."
 target = "{{.Actor}} smiles at you."
 around = "{{.Actor}} smiles at {{.Target}}."
 
-[[emote]]
+[[social]]
 name = "jump"
 
 # note there is no ToSelf section.
 
-[emote.toNoOne]
+[social.toNoOne]
 self = "You jump around like a crazy person."
 around = "{{.Actor}} jumps around like a crazy person."
 
-[emote.toOther]
+[social.toOther]
 self = "You jump {{.Target}}."
 target = "{{.Actor}} jumps you."
 around = "{{.Actor}} jumps {{.Target}}."
@@ -198,34 +198,34 @@ around = "{{.Actor}} jumps {{.Target}}."
 `
 
 var dupes = `
-[[emote]]
+[[social]]
 name = "smile"
 
-[emote.toSelf]
+[social.toSelf]
 self = "You smile to yourself."
 around = "{{.Actor}} smiles to {{.Xself}}."
 
-[emote.toNoOne]
+[social.toNoOne]
 self = "You smile."
 around = "{{.Actor}} smiles."
 
-[emote.toOther]
+[social.toOther]
 self = "You smile at {{.Target}}."
 target = "{{.Actor}} smiles at you."
 around = "{{.Actor}} smiles at {{.Target}}."
 
-[[emote]]
+[[social]]
 name = "smile"
 
-[emote.toSelf]
+[social.toSelf]
 self = "You smile to yourself."
 around = "{{.Actor}} smiles to {{.Xself}}."
 
-[emote.toNoOne]
+[social.toNoOne]
 self = "You smile."
 around = "{{.Actor}} smiles."
 
-[emote.toOther]
+[social.toOther]
 self = "You smile at {{.Target}}."
 target = "{{.Actor}} smiles at you."
 around = "{{.Actor}} smiles at {{.Target}}."
