@@ -43,7 +43,7 @@ To build and run
 -----------------------
 
 ```shell
-go get -d github.com/natefinch/claymud
+go get -d github.com/runner28-code/claymud
 claymud 
 ```
 
